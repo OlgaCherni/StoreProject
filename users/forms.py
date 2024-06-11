@@ -113,8 +113,8 @@ class ProfileForm(UserChangeForm):
     email = forms.CharField()
 
 
-
-    # image = forms.ImageField(
+  # В формах можно указывать все виджиты и стили оформления:
+    # image = forms.ImageField(                                # пользовател может загружать фото в профиль. Импуть принимающий файл
     #     widget=forms.FileInput(attrs={"class": "form-control mt-3"}), required=False
     # )
     # first_name = forms.CharField(

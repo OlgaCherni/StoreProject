@@ -36,7 +36,7 @@ def login(request):
         form = UserLoginForm()
 
     context = {
-        'title': 'Home - Авторизация',
+        'title': 'SW - Авторизация',
         'form': form
     }
     return render(request, 'users/login.html', context)
@@ -55,27 +55,28 @@ def registration(request):
 
             if session_key:
                 Cart.objects.filter(session_key=session_key).update(user=user)
-            messages.success(request, f"{user.username}, Вы успешно зарегистрированы и вошли в аккаунт")
+            messages.success(request, f"{user.username}, Вы успешно зарегистрированы и вошли в аккаунт")     #  messages.success-успешно.сообщение Импорт from django.contrib import messages!
             return HttpResponseRedirect(reverse('main:index'))
     else:
         form = UserRegistrationForm()
     
     context = {
-        'title': 'Home - Регистрация',
+        'title': 'SW - Регистрация',
         'form': form
     }
     return render(request, 'users/registration.html', context)
 
-@login_required
+# Декоратор доступа
+@login_required       # Декоратор доступа запрещает доступ неавторизованным пользователям
 def profile(request):
     if request.method == 'POST':
-        form = ProfileForm(data=request.POST, instance=request.user, files=request.FILES)
-        if form.is_valid():
+        form = ProfileForm(data=request.POST, instance=request.user, files=request.FILES)       #  instance=request.user-лчная инфа пользователя. files=request.FILES-чтоб форма могла примять файлы(фото профиля)
+        if form.is_valid():                            
             form.save()
             messages.success(request, "Профайл успешно обновлен")
             return HttpResponseRedirect(reverse('user:profile'))
     else:
-        form = ProfileForm(instance=request.user)
+        form = ProfileForm(instance=request.user)        # пользователь вошел-подтягиваем его инфу имя, фамилия... параметр instance=request.user
 
     orders = Order.objects.filter(user=request.user).prefetch_related(
                 Prefetch(
@@ -86,7 +87,7 @@ def profile(request):
         
 
     context = {
-        'title': 'Home - Кабинет',
+        'title': 'SW - Кабинет',
         'form': form,
         'orders': orders,
     }
@@ -96,7 +97,8 @@ def users_cart(request):
     return render(request, 'users/users_cart.html')
 
 
-@login_required
+# Декоратор доступа
+@login_required             # Декоратор доступа на выход из аккаунта
 def logout(request):
     messages.success(request, f"{request.user.username}, Вы вышли из аккаунта")
     auth.logout(request)

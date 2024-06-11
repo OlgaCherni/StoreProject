@@ -1,3 +1,4 @@
+ <!-- Главная страница сайта. Отображение стоимости на товар, фильтр-сортировка. Результаты поиска -->
 {% extends "base.html" %}
 {% load static %}
 {% load goods_tags %}
@@ -6,7 +7,7 @@
 {% include "includes/cart_button.html" %}
 {% endblock  %}
 
-
+$
 {% block content %}
 <div class="row">
     <!-- Форма фильтров -->
@@ -20,22 +21,22 @@
             <div class="form-check text-white mx-3">
                 <input class="form-check-input" type="checkbox" name="on_sale" id="flexCheckDefault" value="on" {% if request.GET.on_sale == 'on' %}checked{% endif %}>
                 {% if request.GET.q %}
-                    <input type="hidden" name="q" value="{{ request.GET.q }}">
+                    <input type="hidden" name="q" value="{{ request.GET.q }}">                   <!-- Поиск на сайте -->
                 {% endif %}
                 <label class="form-check-label" for="flexCheckDefault">
                     Товары по акции
                 </label>
             </div>
             <p class="text-white mx-3 mt-3">Сортировать:</p>
-            <div class="form-check text-white mx-3">
-                <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault1" value="default"
-                {% if not request.GET.order_by or request.GET.order_by == 'default' %}checked{% endif %}>
+            <div class="form-check text-white mx-3">                                                                           <!-- на сайте каталог-фильтр. выбираем отметку галочку -чекет -->
+                <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault1" value="default"          
+                {% if not request.GET.order_by or request.GET.order_by == 'default' %}checked{% endif %}>                      <!-- если чекет стоит там где надо-сробатывает -->
                 <label class="form-check-label" for="flexRadioDefault1">
                     По умолчанию
                 </label>
             </div>
             <div class="form-check text-white mx-3">
-                <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault2" value="price" 
+                <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault2" value="price"          
                 {% if request.GET.order_by == 'price' %}checked{% endif %}>
                 <label class="form-check-label" for="flexRadioDefault2">
                     От дешевых к дорогим
@@ -53,23 +54,24 @@
     </div>
 
     {% if request.GET.q %}
-    <h3 class="mt-4">Результаты поиска по запросу {{ request.GET.q }}</h3>
+    <h3 class="mt-4"> Результаты поиска {{ request.GET.q }}</h3>
     {% if not goods %}
         <link rel="stylesheet" href="{% static "deps/css/my_footer_css.css" %}">
-        <h2 class="mt-4">По запросу ничего не найдено</h2>
+        <h2 class="mt-4">По запросу ничего не найдено </h2>
     {% endif %}
     {% endif %}
-    {% for product in goods %}
+
+    {% for product in goods %}                           <!-- из класса продукт перебраем свойства- имя, цена... -->
         <!-- Карта товара -->
         <div class="col-lg-4 col-md-6 p-4">
             <div class="card border-primary rounded custom-shadow">
                 {% if product.image %}
                     <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
                 {% else %}
-                    <img src="{% static "deps/images/Not found image.png" %}" class="card-img-top" alt="...">
+                    <img src="{% static "deps/images/Not found image.png" %}" class="card-img-top" alt="Здесь изображение">          <!-- если фото не находит-побтягивает из статика дефолтное фото -->
                 {% endif %}
                 <div class="card-body">
-                    <a href="{% url "catalog:product" product.slug %}">
+                    <a href="{% url "catalog:product" product.slug %}">    <!-- catalog-нейм спейс. product-имя юрл маршрута. product-ключ каждого товара. slug-уникальный префикс путь латиницей(по слагу или id) -->
                         <p class="card-title">
                             {% autoescape off %}
                                 {% if product.headline %}
@@ -83,21 +85,21 @@
                     <p class="card-text">
                         {% autoescape off %}
                             {% if product.bodyline %}
-                            {{product.bodyline|truncatechars:100}}
+                            {{product.bodyline|truncatechars:130}}                    <!-- количество символов описания товара отображается в окошке  -->
                             {% else %}
-                            {{ product.description|truncatechars:35 }}
+                            {{ product.description|truncatechars:45 }}
                             {% endif %}
                         {% endautoescape %}
                     </p>
                     <p class="product_id">id: {{ product.display_id }}</p>
                     <div class="d-flex justify-content-between">
 
-                        {% if product.discount %}
-                            <p><s>{{product.price}}</s> $</p>
-                            <p><strong>{{ product.sell_price }} $</strong></p>
+                        {% if product.discount %}                                       <!-- стоимость товара. если есть со скидкой-перечеркиваем  -->
+                            <p><s>{{product.price}}</s> руб. </p>
+                            <p><strong>{{ product.sell_price }} руб. </strong></p>
                             <span class="badge bg-warning text-dark">Скидка {{ product.discount }} %</span>
                         {% else %}
-                            <p><strong>{{ product.price }} $</strong></p>
+                            <p><strong>{{ product.price }} руб. </strong></p>
                         {% endif %}
 
                         <a href="{% url "cart:cart_add" %}" class="btn add-to-cart"
@@ -147,7 +149,7 @@
 {% block footer %}
 <footer class="py-4 bg-dark">
     <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Home Python Hub Studio 2023</p>
+        <p class="m-0 text-center text-white">Copyright &copy; SnowWaveStore 2024</p>
     </div>
 </footer>
 {% endblock  %}
